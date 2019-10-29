@@ -1,10 +1,10 @@
-var mainScene = new Phaser.Scene('map1');
+var map1Scene = new Phaser.Scene('map1');
 var positionYPlayer = 3;
 var positionXPlayer = 0;
 var lives = localStorage.getItem("lives");
 
 //Background Song
-var bgSong = new Audio('assets/bgSong.mp3');
+var bgSong = new Audio('assets/sounds/bgSong.mp3');
 //Repeat
 bgSong.addEventListener('ended', function() {
     this.currentTime = 0;
@@ -12,7 +12,10 @@ bgSong.addEventListener('ended', function() {
 }, false);
 bgSong.play();
 
-mainScene.init = function () {
+//Death Sound
+var deathSound = new Audio('assets/sounds/deathSound.wav');
+
+map1Scene.init = function () {
     this.playerSpeed = 1.5;
     this.enemySpeed = 2;
     this.enemyMaxY = 280;
@@ -20,15 +23,15 @@ mainScene.init = function () {
 };
 
 //Loading images
-mainScene.preload = function () {
-    this.load.image('background', 'assets/background.png');
-    this.load.image('player', 'assets/player.png');
-    this.load.image('dragon', 'assets/dragon.png');
-    this.load.image('treasure', 'assets/treasure.png');
-    this.load.image('life','assets/heart.png')
+map1Scene.preload = function () {
+    this.load.image('background', 'assets/images/background.png');
+    this.load.image('player', 'assets/images/player.png');
+    this.load.image('dragon', 'assets/images/dragon.png');
+    this.load.image('treasure', 'assets/images/treasure.png');
+    this.load.image('life','assets/images/heart.png')
 };
 
-mainScene.create = function () {
+map1Scene.create = function () {
     //lixo this.physics.add.collider(player, dragon, colision, null, this);
 
     //Lives on top of screen
@@ -64,7 +67,7 @@ mainScene.create = function () {
     this.cameras.main.resetFX();
 };
 
-mainScene.update = function () {
+map1Scene.update = function () {
     if (!this.isPlayerAlive) {
         return;
     }
@@ -87,11 +90,13 @@ mainScene.update = function () {
     }
     //When enemy hit the player
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.enemy.getBounds())) {
-        mainScene.gameOver();
+        map1Scene.gameOver();
     }
 
     //When player reachs the objective
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.treasure.getBounds())) {
+        lives = 5;
+        bgSong.pause();
         this.scene.start('win');
     }
 
@@ -111,7 +116,7 @@ mainScene.update = function () {
 };
 
 //Enemy Walk?
-mainScene.enemyWalk = function(){
+map1Scene.enemyWalk = function(){
 
     if (this.player.x > this.enemy.x) {
         this.enemy.x += 100;
@@ -127,12 +132,13 @@ mainScene.enemyWalk = function(){
     }
 };
 
-mainScene.distance = function(){
+map1Scene.distance = function(){
     //Euclidean Distance
 };
 
 //When the enemy hit the player it's game over
-mainScene.gameOver = function () {
+map1Scene.gameOver = function () {
+    deathSound.play();
     this.isPlayerAlive = false;
     this.cameras.main.shake(500);
 
@@ -146,7 +152,8 @@ mainScene.gameOver = function () {
         //When you run out of lives, game over and reset both scene/lives
         if (lives == -1){
             lives = 5;
-            this.scene.start('win');
+            bgSong.pause();
+            this.scene.start('loose');
         }
     }, [], this);
 };

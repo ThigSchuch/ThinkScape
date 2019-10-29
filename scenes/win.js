@@ -1,5 +1,8 @@
 var winScene = new Phaser.Scene('win');
 
+//BgWin Song
+var bgWinSong = new Audio('assets/sounds/bgWinSong.mp3');
+
 winScene.init = function () {
 };
 
@@ -7,6 +10,7 @@ winScene.preload = function () {
 };
 
 winScene.create = function () {
+    bgWinSong.play();
     let bg = this.add.sprite(0, 0, 'background');
     bg.setOrigin(0, 0);
     this.player = this.add.sprite(60, 100, 'player');
@@ -19,6 +23,8 @@ winScene.create = function () {
 
 winScene.update = function () {
     if (this.spacebar.isDown) {
+        bgWinSong.pause()
+        bgSong.play();
         this.time.delayedCall(250, function () {
             this.cameras.main.fade(250);
         }, [], this);

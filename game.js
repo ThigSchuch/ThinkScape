@@ -18,7 +18,8 @@
         },
         //Scenes of the game
         scene: [
-            mainScene,
+            map1Scene,
+            looseScene,
             winScene
         ]
     };

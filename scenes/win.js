@@ -22,6 +22,6 @@ winScene.update = function () {
         this.time.delayedCall(250, function () {
             this.cameras.main.fade(250);
         }, [], this);
-        this.scene.start('main');
+        this.scene.start('map1');
     }
 };

@@ -1,7 +1,7 @@
-
 var mainScene = new Phaser.Scene('map1');
 var positionYPlayer = 3;
 var positionXPlayer = 0;
+var lives = localStorage.getItem("lives");
 
 mainScene.init = function () {
     this.playerSpeed = 1.5;
@@ -10,31 +10,43 @@ mainScene.init = function () {
     this.enemyMinY = 80;
 };
 
+//Loading images
 mainScene.preload = function () {
-    this.load.image('background', 'assets/Untitled.png');
+    this.load.image('background', 'assets/background.png');
     this.load.image('player', 'assets/player.png');
     this.load.image('dragon', 'assets/dragon.png');
     this.load.image('treasure', 'assets/treasure.png');
+    this.load.image('life','assets/heart.png')
 };
 
 mainScene.create = function () {
+    //this.physics.add.collider(player, dragon, colision, null, this);
 
+    //Lives on top of screen
+    this.lifePic = this.add.sprite(40, 40, 'life')
+    this.lifePic.setScale(0.02)
+    livesText = this.add.text(70, 28, lives, { fontSize: '32px', fill: '#000' });
+
+    //Mapping the keyboard
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    let bg = this.add.sprite(0, 0, 'background');
-    bg.setOrigin(0, 0);
+    //let bg = this.add.sprite(0, 0, 'background');
+    //bg.setOrigin(0, 0);
 
+    //Player Sprite
     this.player = this.add.sprite(40, this.sys.game.config.height / 2, 'player');
     this.player.setScale(1);
 
+    //Treasure Sprite
     this.treasure = this.add.sprite(this.sys.game.config.width - 80, this.sys.game.config.height / 2, 'treasure');
     this.treasure.setScale(1);
 
-    this.enemy = this.add.sprite(this.sys.game.config.width - 80, this.sys.game.config.height /2, 'dragon')
+    //Enemy Sprite
+    this.enemy = this.add.sprite(this.sys.game.config.width - 480, this.sys.game.config.height /2, 'dragon')
     this.enemy.setScale(1);
 
     this.isPlayerAlive = true;
@@ -46,6 +58,7 @@ mainScene.update = function () {
     if (!this.isPlayerAlive) {
         return;
     }
+    //Setting the commands to the player walk
     if (Phaser.Input.Keyboard.JustDown(this.right)) {
         this.player.x += 100;
         this.enemyWalk();
@@ -62,6 +75,12 @@ mainScene.update = function () {
         this.player.y += 100;
         this.enemyWalk();
     }
+    //When enemy hit the player
+    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.enemy.getBounds())) {
+        mainScene.gameOver();
+    }
+
+    //When player reachs the objective
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.treasure.getBounds())) {
         this.scene.start('win');
     }
@@ -80,6 +99,7 @@ mainScene.update = function () {
 //    }
 };
 
+//Enemy Walk?
 mainScene.enemyWalk = function(){
 
     if (this.player.x > this.enemy.x) {
@@ -97,16 +117,25 @@ mainScene.enemyWalk = function(){
 };
 
 mainScene.distance = function(){
-    
+    //Euclidean Distance
 };
 
+//When the enemy hit the player it's game over
 mainScene.gameOver = function () {
     this.isPlayerAlive = false;
     this.cameras.main.shake(500);
+
     this.time.delayedCall(250, function () {
         this.cameras.main.fade(250);
     }, [], this);
+
     this.time.delayedCall(500, function () {
-        this.scene.restart();
+        this.scene.start('map1');
+        lives -= 1;
+        //When you run out of lives, game over and reset both scene/lives
+        if (lives == -1){
+            lives = 5;
+            this.scene.start('win');
+        }
     }, [], this);
 };

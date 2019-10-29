@@ -16,6 +16,7 @@
                 debug: false
             }
         },
+        //Scenes of the game
         scene: [
             mainScene,
             winScene
@@ -23,6 +24,11 @@
     };
 
     var game = new Phaser.Game(config);
+    
+    //Start first map
     game.scene.start('map1');
+
+    var lives=5;
+    localStorage.setItem("lives",lives);
 })();
 

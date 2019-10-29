@@ -3,6 +3,15 @@ var positionYPlayer = 3;
 var positionXPlayer = 0;
 var lives = localStorage.getItem("lives");
 
+//Background Song
+var bgSong = new Audio('assets/bgSong.mp3');
+//Repeat
+bgSong.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+bgSong.play();
+
 mainScene.init = function () {
     this.playerSpeed = 1.5;
     this.enemySpeed = 2;
@@ -20,7 +29,7 @@ mainScene.preload = function () {
 };
 
 mainScene.create = function () {
-    //this.physics.add.collider(player, dragon, colision, null, this);
+    //lixo this.physics.add.collider(player, dragon, colision, null, this);
 
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
@@ -34,6 +43,7 @@ mainScene.create = function () {
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    //Set background image
     //let bg = this.add.sprite(0, 0, 'background');
     //bg.setOrigin(0, 0);
 
@@ -85,6 +95,7 @@ mainScene.update = function () {
         this.scene.start('win');
     }
 
+// lixo
 //    for (let i = 0; i < numEnemies; i++) {
 //       enemies[i].y += enemies[i].speed;
 //        if (enemies[i].y >= this.enemyMaxY && enemies[i].speed > 0) {

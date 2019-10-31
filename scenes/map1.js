@@ -6,6 +6,7 @@ var positionXEnemy = 11;
 var lives = localStorage.getItem("lives");
 var textP;
 var textE;
+var textB;
 
 //Set obstacles location
 var blocked = ['4,5', '6,4','8,6'];
@@ -86,6 +87,7 @@ map1Scene.create = function () {
     //Text of coordenades player/enemy
     textP = this.add.text(100, 50, '('+positionXPlayer+','+positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
     textE = this.add.text(300, 50, '('+positionXEnemy+','+positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
+    textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
 };
 
 map1Scene.update = function () {
@@ -190,14 +192,15 @@ map1Scene.resetPosition = function(){
 
 //Get the minor and second minor value
 map1Scene.minor = function(array){
-    minor = 999;
-    second = 999;
+    minor = Infinity;
+    second = Infinity;
 
     for (var i = 0; i < array.length; i++){
         if (array[i] < minor){
+            second = minor;
             minor = array[i];
         }
-        if (array[i] < second < minor){
+        else if (array[i] > minor && array[i] < second){
             second = array[i];
         }
     }
@@ -213,7 +216,6 @@ map1Scene.enemyWalk = function(){
     down = this.euclideanCalc(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy+1)
 
     array = [left,right,up,down];
-    
     //Get the better way until the player
     lowestsValue = this.minor(array);
     

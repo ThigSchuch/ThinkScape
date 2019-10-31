@@ -1,15 +1,15 @@
-var looseScene = new Phaser.Scene('loose');
+var loseScene = new Phaser.Scene('lose');
 
 //BgDeath Song
 var bgDeathSong = new Audio('assets/sounds/bgDeathSong.mp3');
 
-looseScene.init = function () {
+loseScene.init = function () {
 };
 
-looseScene.preload = function () {
+loseScene.preload = function () {
 };
 
-looseScene.create = function () {
+loseScene.create = function () {
     bgDeathSong.play();
     let bg = this.add.sprite(0, 0, 'background');
     bg.setOrigin(0, 0);
@@ -21,7 +21,7 @@ looseScene.create = function () {
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 };
 
-looseScene.update = function () {
+loseScene.update = function () {
     if (this.spacebar.isDown) {
         bgDeathSong.pause()
         bgSong.play();

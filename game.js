@@ -1,7 +1,7 @@
 (function () {
     var config = {
-        width: 1500,
-        height: 700,
+        width: 1280,
+        height: 720,
         type: Phaser.AUTO,
         title: 'ThinkScape',
         backgroundColor: 0x336699,
@@ -19,7 +19,7 @@
         //Scenes of the game
         scene: [
             map1Scene,
-            looseScene,
+            loseScene,
             winScene
         ]
     };

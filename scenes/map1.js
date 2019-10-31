@@ -7,6 +7,7 @@ var lives = localStorage.getItem("lives");
 var textP;
 var textE;
 var textB;
+var oldXYPlayer = [2,5];
 
 //Set obstacles location
 var blocked = ['4,5', '6,4','8,6'];
@@ -33,25 +34,25 @@ map1Scene.init = function () {
 
 //Loading images
 map1Scene.preload = function () {
-    this.load.image('background', 'assets/images/background.png');
+    this.load.image('bgMap1', 'assets/images/bgMap1.png');
     this.load.image('player', 'assets/images/player.png');
-    this.load.image('dragon', 'assets/images/dragon.png');
-    this.load.image('treasure', 'assets/images/treasure.png');
+    this.load.image('enemy', 'assets/images/enemy.png');
+    this.load.image('portal', 'assets/images/portal.png');
     this.load.image('life', 'assets/images/heart.png');
-    this.load.image('obstacle','assets/images/obstacle.png')
+    this.load.image('obstacle','assets/images/obstacle.png');
+    this.load.image('skull','assets/images/skull.png')
 };
 
 map1Scene.create = function () {
-    //lixo this.physics.add.collider(player, dragon, colision, null, this);
    
     //Set background image
-    let bg = this.add.sprite(0, 0, 'background');
+    let bg = this.add.sprite(0, 0, 'bgMap1');
     bg.setOrigin(0, 0);
 
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
-    this.lifePic.setScale(0.02)
-    livesText = this.add.text(70, 28, lives, { fontSize: '32px', fill: '#000' });
+    this.lifePic.setScale(0.05)
+    livesText = this.add.text(70, 25, lives, { fontSize: '40px', fill: '#000' });
 
     //Mapping the keyboard
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -64,20 +65,20 @@ map1Scene.create = function () {
     this.player = this.add.sprite(140, this.sys.game.config.height / 2, 'player');
     this.player.setScale(1);
 
-    //Treasure Sprite
-    this.treasure = this.add.sprite(this.sys.game.config.width - 100, this.sys.game.config.height / 2, 'treasure');
-    this.treasure.setScale(1);
+    //portal Sprite
+    this.portal = this.add.sprite(this.sys.game.config.width - 100, this.sys.game.config.height / 2, 'portal');
+    this.portal.setScale(0.4);
 
     //Enemy Sprite
-    this.enemy = this.add.sprite(this.sys.game.config.width - 420, this.sys.game.config.height /2, 'dragon')
+    this.enemy = this.add.sprite(this.sys.game.config.width - 420, this.sys.game.config.height /2, 'enemy')
     this.enemy.setScale(1);
 
-    //Obstacle Sprite
-    this.obstacle = this.add.sprite(this.sys.game.config.width - 980, this.sys.game.config.height - 360, 'obstacle')
+    //Obstacles
+    this.obstacle = this.add.sprite(300, 360, 'obstacle')
     this.obstacle.setScale(0.13);
-    this.obstacle = this.add.sprite(this.sys.game.config.width - 820, this.sys.game.config.height - 440, 'obstacle')
+    this.obstacle = this.add.sprite(460, 280, 'obstacle')
     this.obstacle.setScale(0.13);
-    this.obstacle = this.add.sprite(this.sys.game.config.width - 660, this.sys.game.config.height - 280, 'obstacle')
+    this.obstacle = this.add.sprite(620, 440, 'obstacle')
     this.obstacle.setScale(0.13);
 
     this.isPlayerAlive = true;
@@ -88,6 +89,7 @@ map1Scene.create = function () {
     textP = this.add.text(100, 50, '('+positionXPlayer+','+positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
     textE = this.add.text(300, 50, '('+positionXEnemy+','+positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
     textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
+
 };
 
 map1Scene.update = function () {
@@ -98,32 +100,39 @@ map1Scene.update = function () {
     //Setting the commands to the player walk and the enemy walk
     if (Phaser.Input.Keyboard.JustDown(this.right) && this.allowedToMove(positionXPlayer+1,positionYPlayer)){
         this.player.x += 80;
-        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy); 
+        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
+        oldXYPlayer = [positionXPlayer,positionYPlayer];
         positionXPlayer += 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.left) && this.allowedToMove(positionXPlayer-1,positionYPlayer)) {
         this.player.x -= 80;
-        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy); 
+        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
+        oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionXPlayer -= 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.up) && this.allowedToMove(positionXPlayer,positionYPlayer-1)) {
         this.player.y -= 80;
-        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy); 
+        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
+        oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionYPlayer -= 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.down) && this.allowedToMove(positionXPlayer,positionYPlayer+1)) {
         this.player.y += 80;
-        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy); 
+        this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
+        oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionYPlayer += 1;
     }
 
-    //When enemy is on the back of the player
-    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.enemy.getBounds())) {
+    //When enemy reachs the player
+    if (oldXYPlayer[0] == positionXEnemy && oldXYPlayer[1] == positionYEnemy){
         map1Scene.gameOver();
     }
+    //if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.enemy.getBounds())) {
+    //    map1Scene.gameOver();
+    //}
  
     //When player reachs the objective
-    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.treasure.getBounds())) {
+    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.portal.getBounds())) {
         lives = 5;
         bgSong.pause();
         this.scene.start('win');
@@ -255,6 +264,12 @@ map1Scene.enemyWalk = function(){
 
 //When the enemy hit the player it's game over
 map1Scene.gameOver = function () {
+    bgSong.pause();
+    bgSong.currentTime = 0;
+
+    this.skull = this.add.sprite(this.sys.game.config.width/2, this.sys.game.config.height /2, 'skull');
+    this.skull.setScale(4);
+
     deathSound.play();
     this.isPlayerAlive = false;
     this.cameras.main.shake(800);
@@ -275,4 +290,5 @@ map1Scene.gameOver = function () {
             this.scene.start('lose');
         }
     }, [], this);
+    bgSong.play();
 };

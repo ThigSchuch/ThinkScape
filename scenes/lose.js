@@ -7,17 +7,17 @@ loseScene.init = function () {
 };
 
 loseScene.preload = function () {
+    this.load.image('bgLose', 'assets/images/bgLose.jpg');
 };
 
 loseScene.create = function () {
     bgDeathSong.play();
-    let bg = this.add.sprite(0, 0, 'background');
-    bg.setOrigin(0, 0);
-    this.player = this.add.sprite(60, 100, 'player');
+    let bg = this.add.sprite(0, 0, 'bgLose');
+    bg.setScale(2);
 
-    this.add.text(100, 50, 'Derrota!', { fontSize: '100px', fontFamily: 'Arial', fill: '#fff' });
-    this.add.text(40, 150, 'Você perdeu todas as vidas!', { fontSize: '33px', fill: '#fff', fontFamily: 'Arial' });
-    this.add.text(40, 260, 'Pressione a barra de espaço para reiniciar', { fontSize: '18px', fill: '#fff', fontFamily: 'Arial' });
+    this.add.text(500, 200, 'Derrota!', { fontSize: '100px', fontFamily: 'Arial', fill: '#fff' });
+    this.add.text(500, 300, 'Você perdeu todas as vidas!', { fontSize: '33px', fill: '#fff', fontFamily: 'Arial' });
+    this.add.text(500, 350, 'Pressione a barra de espaço para reiniciar', { fontSize: '18px', fill: '#fff', fontFamily: 'Arial' });
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 };
 

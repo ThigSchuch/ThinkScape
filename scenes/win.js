@@ -1,23 +1,23 @@
 var winScene = new Phaser.Scene('win');
 
 //BgWin Song
-var bgWinSong = new Audio('assets/sounds/bgWinSong.mp3');
+var bgWinSong = new Audio('assets/sounds/bgWinSong.wav');
 
 winScene.init = function () {
 };
 
 winScene.preload = function () {
+    this.load.image('bgWin', 'assets/images/bgWin.png');
 };
 
 winScene.create = function () {
     bgWinSong.play();
-    let bg = this.add.sprite(0, 0, 'background');
-    bg.setOrigin(0, 0);
-    this.player = this.add.sprite(60, 100, 'player');
+    let bg = this.add.sprite(0,0,'bgWin');
+    bg.setScale(2);
 
-    this.add.text(100, 50, 'Vitória', { fontSize: '100px', fontFamily: 'Arial', fill: '#fff' });
-    this.add.text(40, 150, 'Você alcançou o tesouro!', { fontSize: '33px', fill: '#fff', fontFamily: 'Arial' });
-    this.add.text(40, 260, 'Pressione a barra de espaço para continuar', { fontSize: '18px', fill: '#fff', fontFamily: 'Arial' });
+    this.add.text(500, 200, 'Vitória', { fontSize: '100px', fontFamily: 'Arial', fill: '#fff' });
+    this.add.text(500, 300, 'Você se salvou!', { fontSize: '33px', fill: '#fff', fontFamily: 'Arial' });
+    this.add.text(500, 350, 'Pressione a barra de espaço para continuar', { fontSize: '18px', fill: '#fff', fontFamily: 'Arial' });
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 };
 

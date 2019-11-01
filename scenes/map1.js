@@ -105,6 +105,9 @@ map1Scene.create = function () {
 
 };
 
+
+//Where the magic happens
+
 map1Scene.update = function () {
     if (!this.isPlayerAlive) {
         return;
@@ -154,39 +157,26 @@ map1Scene.update = function () {
     }
     
     this.updateText();
-    
-    
-// lixo
-//    for (let i = 0; i < numEnemies; i++) {
-//       enemies[i].y += enemies[i].speed;
-//        if (enemies[i].y >= this.enemyMaxY && enemies[i].speed > 0) {
-//            enemies[i].speed *= -1;
-//        } else if (enemies[i].y <= this.enemyMinY && enemies[i].speed < 0) {
-//            enemies[i].speed *= -1;
-//        }
-//        if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), enemies[i].getBounds())) {
-//            this.gameOver();
-//            break;
-//        }
-//    }
 };
 
 //Check if the player/enemy is allowed to move to that position
-map1Scene.allowedToMove = function(positionXPlayer,positionYPlayer){
+map1Scene.allowedToMove = function(positionX,positionY){
     allowed = true;
-    for (var i = 0; i < blocked.length; i++){
-        bX = blocked[i].split(",")[0];
-        bY = blocked[i].split(",")[1];
-
-        //Bounds of map
-        // 14 is the limit of X
-        // 8 is the limit of Y
-        if (positionXPlayer == 0 || positionYPlayer == 0 || positionXPlayer == 14 || positionYPlayer == 8){
-            allowed = false;
-        }
-        //Obstacles
-        else if (bX == positionXPlayer && bY == positionYPlayer){
-            allowed = false;
+    //Bounds of map
+    // 14 is the limit of X
+    // 8 is the limit of Y
+    if (positionX == 0 || positionY == 0 || positionX == 14 || positionY == 8){
+        allowed = false;
+    }
+    else{
+        for (var i = 0; i < blocked.length; i++){
+            bX = blocked[i].split(",")[0];
+            bY = blocked[i].split(",")[1];
+            
+            //Obstacles
+            if (bX == positionX && bY == positionY){
+                allowed = false;
+            }
         }
     }
     return allowed;

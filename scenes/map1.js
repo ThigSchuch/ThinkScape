@@ -1,8 +1,10 @@
 var map1Scene = new Phaser.Scene('map1');
-var positionYPlayer = 5;
 var positionXPlayer = 2;
-var positionYEnemy = 5;
-var positionXEnemy = 11;
+var positionYPlayer = 4;
+var positionXEnemy = 9;
+var positionYEnemy = 4;
+var positionXPortal = 13;
+var positionYPortal = 4;
 var lives = localStorage.getItem("lives");
 var textP;
 var textE;
@@ -10,7 +12,7 @@ var textB;
 var oldXYPlayer = [2,5];
 
 //Set obstacles location
-var blocked = ['4,5', '6,4','8,6'];
+var blocked = ['4,3','7,4','4,5','7,6','8,6','7,2','8,2','10,3','10,5'];
 
 //Background Song
 var bgSong = new Audio('assets/sounds/bgSong.mp3');
@@ -39,7 +41,10 @@ map1Scene.preload = function () {
     this.load.image('enemy', 'assets/images/enemy.png');
     this.load.image('portal', 'assets/images/portal.png');
     this.load.image('life', 'assets/images/heart.png');
-    this.load.image('obstacle','assets/images/obstacle.png');
+    this.load.image('fire','assets/images/obstacles/fire.png');
+    this.load.image('barrel','assets/images/obstacles/barrel.png');
+    this.load.image('rock','assets/images/obstacles/rock.png');
+    this.load.image('bush','assets/images/obstacles/bush.png');
     this.load.image('skull','assets/images/skull.png')
 };
 
@@ -62,24 +67,32 @@ map1Scene.create = function () {
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     //Player Sprite
-    this.player = this.add.sprite(140, this.sys.game.config.height / 2, 'player');
+    this.player = this.add.sprite(150, 350, 'player');
     this.player.setScale(1);
 
     //portal Sprite
-    this.portal = this.add.sprite(this.sys.game.config.width - 100, this.sys.game.config.height / 2, 'portal');
-    this.portal.setScale(0.4);
+    this.portal = this.add.sprite(1250, 350, 'portal');
+    this.portal.setScale(0.3);
 
     //Enemy Sprite
-    this.enemy = this.add.sprite(this.sys.game.config.width - 420, this.sys.game.config.height /2, 'enemy')
+    this.enemy = this.add.sprite(850, 350, 'enemy')
     this.enemy.setScale(1);
 
     //Obstacles
-    this.obstacle = this.add.sprite(300, 360, 'obstacle')
-    this.obstacle.setScale(0.13);
-    this.obstacle = this.add.sprite(460, 280, 'obstacle')
-    this.obstacle.setScale(0.13);
-    this.obstacle = this.add.sprite(620, 440, 'obstacle')
-    this.obstacle.setScale(0.13);
+    this.fire1 = this.add.sprite(650, 350, 'fire')
+    this.fire1.setScale(0.15);
+    this.barrel1 = this.add.sprite(350, 250, 'barrel')
+    this.barrel1.setScale(0.5);
+    this.barrel2 = this.add.sprite(350, 450, 'barrel')
+    this.barrel2.setScale(0.5);
+    this.rock1 = this.add.sprite(700, 525, 'rock')
+    this.rock1.setScale(0.3);
+    this.rock2 = this.add.sprite(700, 125, 'rock')
+    this.rock2.setScale(0.3);
+    this.bush1 = this.add.sprite(950, 250, 'bush')
+    this.bush1.setScale(0.3);
+    this.bush2 = this.add.sprite(950, 450, 'bush')
+    this.bush2.setScale(0.3);
 
     this.isPlayerAlive = true;
 
@@ -99,25 +112,25 @@ map1Scene.update = function () {
     
     //Setting the commands to the player walk and the enemy walk
     if (Phaser.Input.Keyboard.JustDown(this.right) && this.allowedToMove(positionXPlayer+1,positionYPlayer)){
-        this.player.x += 80;
+        this.player.x += 100;
         this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
         oldXYPlayer = [positionXPlayer,positionYPlayer];
         positionXPlayer += 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.left) && this.allowedToMove(positionXPlayer-1,positionYPlayer)) {
-        this.player.x -= 80;
+        this.player.x -= 100;
         this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
         oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionXPlayer -= 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.up) && this.allowedToMove(positionXPlayer,positionYPlayer-1)) {
-        this.player.y -= 80;
+        this.player.y -= 100;
         this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
         oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionYPlayer -= 1;
     }
     if (Phaser.Input.Keyboard.JustDown(this.down) && this.allowedToMove(positionXPlayer,positionYPlayer+1)) {
-        this.player.y += 80;
+        this.player.y += 100;
         this.enemyWalk(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy);
         oldXYPlayer = [positionXPlayer,positionYPlayer]; 
         positionYPlayer += 1;
@@ -132,7 +145,7 @@ map1Scene.update = function () {
     //}
  
     //When player reachs the objective
-    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.portal.getBounds())) {
+    if (positionXPlayer == positionXPortal && positionYPlayer == positionYPortal) {
         lives = 5;
         bgSong.pause();
         this.scene.start('win');
@@ -166,9 +179,9 @@ map1Scene.allowedToMove = function(positionXPlayer,positionYPlayer){
         bY = blocked[i].split(",")[1];
 
         //Bounds of map
-        // 16 is the limit of X
-        // 10 is the limit of Y
-        if (positionXPlayer == 0 || positionYPlayer == 0 || positionXPlayer == 16 || positionYPlayer == 10){
+        // 14 is the limit of X
+        // 8 is the limit of Y
+        if (positionXPlayer == 0 || positionYPlayer == 0 || positionXPlayer == 14 || positionYPlayer == 8){
             allowed = false;
         }
         //Obstacles
@@ -192,10 +205,10 @@ map1Scene.updateText = function(){
 
 //When player dies, reset position counter
 map1Scene.resetPosition = function(){
-    positionYPlayer = 5;
     positionXPlayer = 2;
-    positionYEnemy = 5;
-    positionXEnemy = 11;
+    positionYPlayer = 4;
+    positionXEnemy = 9;
+    positionYEnemy = 4;
 }
 
 
@@ -229,35 +242,35 @@ map1Scene.enemyWalk = function(){
     lowestsValue = this.minor(array);
     
     if (lowestsValue[0] == left && this.allowedToMove(positionXEnemy-1,positionYEnemy)){
-        this.enemy.x -= 80;
+        this.enemy.x -= 100;
         positionXEnemy -= 1;
     }
     else if (lowestsValue[0] == right && this.allowedToMove(positionXEnemy+1,positionYEnemy)){
-        this.enemy.x += 80;
+        this.enemy.x += 100;
         positionXEnemy += 1;
     }
     else if (lowestsValue[0] == up && this.allowedToMove(positionXEnemy,positionYEnemy-1)){
-        this.enemy.y -= 80;
+        this.enemy.y -= 100;
         positionYEnemy -= 1;
     }
     else if (lowestsValue[0] == down && this.allowedToMove(positionXEnemy,positionYEnemy+1)){
-        this.enemy.y += 80;
+        this.enemy.y += 100;
         positionYEnemy += 1;
     }
     else if (lowestsValue[1] == left && this.allowedToMove(positionXEnemy-1,positionYEnemy)){
-        this.enemy.x -= 80;
+        this.enemy.x -= 100;
         positionXEnemy -= 1;
     }
     else if (lowestsValue[1] == right && this.allowedToMove(positionXEnemy+1,positionYEnemy)){
-        this.enemy.x += 80;
+        this.enemy.x += 100;
         positionXEnemy += 1;
     }
     else if (lowestsValue[1] == up && this.allowedToMove(positionXEnemy,positionYEnemy-1)){
-        this.enemy.y -= 80;
+        this.enemy.y -= 100;
         positionYEnemy -= 1;
     }
     else if (lowestsValue[1] == down && this.allowedToMove(positionXEnemy,positionYEnemy+1)){
-        this.enemy.y += 80;
+        this.enemy.y += 100;
         positionYEnemy += 1;
     }
 };

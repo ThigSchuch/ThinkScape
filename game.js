@@ -1,7 +1,7 @@
 (function () {
     var config = {
-        width: 1280,
-        height: 720,
+        width: 1300,
+        height: 700,
         type: Phaser.AUTO,
         title: 'ThinkScape',
         backgroundColor: 0x336699,

@@ -6,33 +6,13 @@ var positionYEnemy = 4;
 var positionXPortal = 13;
 var positionYPortal = 4;
 var lives = localStorage.getItem("lives");
-var textP;
-var textE;
-var textB;
+var bgSong = new Audio('assets/sounds/bgSong.mp3');
 var oldXYPlayer = [2,5];
 
 //Set obstacles location
 var blocked = ['4,3','7,4','4,5','7,6','8,6','7,2','8,2','10,3','10,5'];
 
-//Background Song
-var bgSong = new Audio('assets/sounds/bgSong.mp3');
-//Repeat
-bgSong.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-}, false);
-bgSong.play();
-
-//Death Sound
-var deathSound = new Audio('assets/sounds/deathSound.wav');
-
-map1Scene.init = function () {
-    //lixo
-    //this.playerSpeed = 1.5;
-    //this.enemySpeed = 2;
-    //this.enemyMaxY = 280;
-    //this.enemyMinY = 80;
-};
+map1Scene.init = function () {};
 
 //Loading images
 map1Scene.preload = function () {
@@ -45,11 +25,15 @@ map1Scene.preload = function () {
     this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
     this.load.image('bush','assets/images/obstacles/bush.png');
-    this.load.image('skull','assets/images/skull.png')
+    this.load.image('skull','assets/images/skull.png');
 };
 
 map1Scene.create = function () {
    
+    //Start and repeat background soung
+    bgSong.play();
+    this.repeatSong(bgSong);
+
     //Set background image
     let bg = this.add.sprite(0, 0, 'bgMap1');
     bg.setOrigin(0, 0);
@@ -106,6 +90,20 @@ map1Scene.create = function () {
 };
 
 
+//Simple functions
+map1Scene.repeatSong = function(song){
+    song.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+};
+
+map1Scene.restartSong = function(song){
+    song.pause();
+    song.currentTime = 0;
+};
+
+
 //Where the magic happens
 
 map1Scene.update = function () {
@@ -143,9 +141,6 @@ map1Scene.update = function () {
     if (oldXYPlayer[0] == positionXEnemy && oldXYPlayer[1] == positionYEnemy){
         map1Scene.gameOver();
     }
-    //if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.enemy.getBounds())) {
-    //    map1Scene.gameOver();
-    //}
  
     //When player reachs the objective
     if (positionXPlayer == positionXPortal && positionYPlayer == positionYPortal) {
@@ -162,7 +157,7 @@ map1Scene.update = function () {
 //Check if the player/enemy is allowed to move to that position
 map1Scene.allowedToMove = function(positionX,positionY){
     allowed = true;
-    //Bounds of map
+    //Bounds of map actually
     // 14 is the limit of X
     // 8 is the limit of Y
     if (positionX == 0 || positionY == 0 || positionX == 14 || positionY == 8){
@@ -176,6 +171,7 @@ map1Scene.allowedToMove = function(positionX,positionY){
             //Obstacles
             if (bX == positionX && bY == positionY){
                 allowed = false;
+                i = blocked.length;
             }
         }
     }
@@ -267,13 +263,16 @@ map1Scene.enemyWalk = function(){
 
 //When the enemy hit the player it's game over
 map1Scene.gameOver = function () {
-    bgSong.pause();
-    bgSong.currentTime = 0;
+    //Pause and restart background song
+    this.restartSong(bgSong);
 
+    //Show skull in the screen
     this.skull = this.add.sprite(this.sys.game.config.width/2, this.sys.game.config.height /2, 'skull');
     this.skull.setScale(4);
 
-    deathSound.play();
+    //Play DeathSound
+    new Audio('assets/sounds/deathSound.wav').play();
+
     this.isPlayerAlive = false;
     this.cameras.main.shake(800);
 
@@ -284,9 +283,11 @@ map1Scene.gameOver = function () {
     this.time.delayedCall(800, function () {
         this.scene.start('map1');
         lives -= 1;
+        
         //Reset both position
         this.resetPosition();
-        //When you run out of lives, game ends and reset both scene/lives
+
+        //When player run out of lives, game ends and reset both scene/lives
         if (lives == -1){
             lives = 5;
             bgSong.pause();

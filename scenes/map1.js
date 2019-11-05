@@ -20,7 +20,7 @@ map1Scene.preload = function () {
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.image('portal', 'assets/images/portal.png');
     this.load.image('life', 'assets/images/heart.png');
-    this.load.image('fire','assets/images/obstacles/fire.png');
+    this.load.spritesheet('fire','assets/images/obstacles/fireanim.png', { frameWidth: 57, frameHeight: 72 });
     this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
     this.load.image('bush','assets/images/obstacles/bush.png');
@@ -48,6 +48,36 @@ map1Scene.create = function () {
     this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    //Obstacles
+    this.fire1 = this.add.sprite(650, 350, 'fire')
+    this.fire1.setScale(1.6);
+
+    //Fire Animation
+    this.anims.create({
+        key: 'fire',
+        frames: this.anims.generateFrameNumbers('fire', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.fire1.anims.play('fire', true);
+    
+    //More Obstacles
+    this.barrel1 = this.add.sprite(350, 250, 'barrel')
+    this.barrel1.setScale(0.5);
+    this.barrel2 = this.add.sprite(350, 450, 'barrel')
+    this.barrel2.setScale(0.5);
+    this.rock2 = this.add.sprite(700, 125, 'rock')
+    this.rock2.setScale(0.3);
+    this.bush1 = this.add.sprite(950, 250, 'bush')
+    this.bush1.setScale(0.3);
+    this.bush2 = this.add.sprite(950, 450, 'bush')
+    this.bush2.setScale(0.3);
+
+    this.isPlayerAlive = true;
+
+    this.cameras.main.resetFX();
+
 
     //Player Sprite
     this.player = this.add.sprite(150, 335, 'player');
@@ -119,25 +149,9 @@ map1Scene.create = function () {
         repeat: 1
     });
 
-    //Obstacles
-    this.fire1 = this.add.sprite(650, 350, 'fire')
-    this.fire1.setScale(0.15);
-    this.barrel1 = this.add.sprite(350, 250, 'barrel')
-    this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(350, 450, 'barrel')
-    this.barrel2.setScale(0.5);
+    //More Obstacles to player/enemy don't override it
     this.rock1 = this.add.sprite(700, 525, 'rock')
     this.rock1.setScale(0.3);
-    this.rock2 = this.add.sprite(700, 125, 'rock')
-    this.rock2.setScale(0.3);
-    this.bush1 = this.add.sprite(950, 250, 'bush')
-    this.bush1.setScale(0.3);
-    this.bush2 = this.add.sprite(950, 450, 'bush')
-    this.bush2.setScale(0.3);
-
-    this.isPlayerAlive = true;
-
-    this.cameras.main.resetFX();
 
     //Text of coordenades player/enemy
     textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
@@ -347,5 +361,4 @@ map1Scene.gameOver = function () {
             this.scene.start('lose');
         }
     }, [], this);
-    this.bgSong.play();
 };

@@ -343,5 +343,4 @@ map2Scene.gameOver = function () {
             this.scene.start('lose');
         }
     }, [], this);
-    this.bgSong.play();
 };

@@ -19,6 +19,7 @@
         //Scenes of the game
         scene: [
             map1Scene,
+            map2Scene,
             loseScene,
             winScene
         ]

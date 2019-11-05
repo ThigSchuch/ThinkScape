@@ -1,8 +1,10 @@
-var map1Scene = new Phaser.Scene('map1');
+var map2Scene = new Phaser.Scene('map2');
 var lives = localStorage.getItem("lives");
 
-map1Scene.init = function () {
-    this.blocked = ['4,3','7,4','4,5','7,6','8,6','7,2','8,2','10,3','10,5'];
+map2Scene.init = function () {
+    //Set obstacles location
+    this.blocked = ['4,5','10,4','7,6'];
+
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
     this.positionXEnemy = 9;
@@ -14,27 +16,27 @@ map1Scene.init = function () {
 };
 
 //Loading images
-map1Scene.preload = function () {
-    this.load.image('bgMap1', 'assets/images/bgMap1.png');
+map2Scene.preload = function () {
+    this.load.image('bgMap2', 'assets/images/bgMap2.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.image('portal', 'assets/images/portal.png');
     this.load.image('life', 'assets/images/heart.png');
-    this.load.image('fire','assets/images/obstacles/fire.png');
+    this.load.image('treasure','assets/images/obstacles/treasure.png');
     this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
     this.load.image('bush','assets/images/obstacles/bush.png');
     this.load.image('skull','assets/images/skull.png');
 };
 
-map1Scene.create = function () {
+map2Scene.create = function () {
    
     //Start and repeat background soung
     this.bgSong.play();
     repeatSong(this.bgSong);
 
     //Set background image
-    var bg = this.add.sprite(0, 0, 'bgMap1');
+    var bg = this.add.sprite(0, 0, 'bgMap2');
     bg.setOrigin(0, 0);
 
     //Lives on top of screen
@@ -48,6 +50,7 @@ map1Scene.create = function () {
     this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
 
     //Player Sprite
     this.player = this.add.sprite(150, 335, 'player');
@@ -120,20 +123,12 @@ map1Scene.create = function () {
     });
 
     //Obstacles
-    this.fire1 = this.add.sprite(650, 350, 'fire')
-    this.fire1.setScale(0.15);
-    this.barrel1 = this.add.sprite(350, 250, 'barrel')
+    this.fire1 = this.add.sprite(650, 550, 'treasure')
+    this.fire1.setScale(1.2);
+    this.barrel1 = this.add.sprite(350, 450, 'barrel')
     this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(350, 450, 'barrel')
+    this.barrel2 = this.add.sprite(950, 350, 'barrel')
     this.barrel2.setScale(0.5);
-    this.rock1 = this.add.sprite(700, 525, 'rock')
-    this.rock1.setScale(0.3);
-    this.rock2 = this.add.sprite(700, 125, 'rock')
-    this.rock2.setScale(0.3);
-    this.bush1 = this.add.sprite(950, 250, 'bush')
-    this.bush1.setScale(0.3);
-    this.bush2 = this.add.sprite(950, 450, 'bush')
-    this.bush2.setScale(0.3);
 
     this.isPlayerAlive = true;
 
@@ -148,11 +143,11 @@ map1Scene.create = function () {
 
 //Where the magic happens
 
-map1Scene.update = function () {
+map2Scene.update = function () {
     if (!this.isPlayerAlive) {
         return;
     }
-
+    
     //Setting the commands to the player walk and the enemy walk
     if (Phaser.Input.Keyboard.JustDown(this.right) && this.allowedToMove(this.positionXPlayer+1,this.positionYPlayer)){
         this.player.anims.play('rightP', true);
@@ -185,13 +180,14 @@ map1Scene.update = function () {
 
     //When enemy reachs the player
     if (this.oldXYPlayer[0] == this.positionXEnemy && this.oldXYPlayer[1] == this.positionYEnemy){
-        map1Scene.gameOver();
+        map2Scene.gameOver();
     }
  
     //When player reachs the objective
     if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
+        lives = 5;
         this.bgSong.pause();
-        this.scene.start('map2');
+        this.scene.start('win');
         //Reset both position
         this.resetPosition();
     }
@@ -200,12 +196,12 @@ map1Scene.update = function () {
 };
 
 //Check if the player/enemy is allowed to move to that position
-map1Scene.allowedToMove = function(positionX,positionY){
+map2Scene.allowedToMove = function(positionX,positionY){
     allowed = true;
     //Bounds of map actually
     // 14 is the limit of X
-    // 8 is the limit of Y
-    if (positionX == 0 || positionY == 1 || positionX == 14 || positionY == 8){
+    // 3 and 8 is the limit of Y
+    if (positionX == 0 || positionY == 3 || positionX == 14 || positionY == 8){
         allowed = false;
     }
     else{
@@ -224,18 +220,18 @@ map1Scene.allowedToMove = function(positionX,positionY){
 }
 
 //Euclidean Calc?
-map1Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
+map2Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
     return(Math.sqrt(Math.pow((positionXPlayer - positionXEnemy),2) + Math.pow((positionYPlayer - positionYEnemy),2)));
 }
 
 //Coordenates
-map1Scene.updateText = function(){
+map2Scene.updateText = function(){
     textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
     textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter
-map1Scene.resetPosition = function(){
+map2Scene.resetPosition = function(){
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
     this.positionXEnemy = 9;
@@ -244,7 +240,7 @@ map1Scene.resetPosition = function(){
 
 
 //Get the minor and second minor value
-map1Scene.minor = function(array){
+map2Scene.minor = function(array){
     minor = Infinity;
     second = Infinity;
 
@@ -261,7 +257,7 @@ map1Scene.minor = function(array){
 }
 
 //Enemy walk
-map1Scene.enemyWalk = function(){
+map2Scene.enemyWalk = function(){
 
     left = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy-1,this.positionYEnemy)
     right = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy+1,this.positionYEnemy)
@@ -315,7 +311,7 @@ map1Scene.enemyWalk = function(){
 };
 
 //When the enemy hit the player it's game over
-map1Scene.gameOver = function () {
+map2Scene.gameOver = function () {
     //Pause and restart background song
     restartSong(this.bgSong);
 
@@ -334,9 +330,9 @@ map1Scene.gameOver = function () {
     }, [], this);
 
     this.time.delayedCall(800, function () {
-        this.scene.start('map1');
+        this.scene.start('map2');
         lives -= 1;
-
+        
         //Reset both position
         this.resetPosition();
 

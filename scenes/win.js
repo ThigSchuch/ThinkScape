@@ -1,9 +1,8 @@
 var winScene = new Phaser.Scene('win');
 
-//BgWin Song
-var bgWinSong = new Audio('assets/sounds/bgWinSong.wav');
-
 winScene.init = function () {
+    //BgWin Song
+    this.bgWinSong = new Audio('assets/sounds/bgWinSong.wav');
 };
 
 winScene.preload = function () {
@@ -11,8 +10,8 @@ winScene.preload = function () {
 };
 
 winScene.create = function () {
-    bgWinSong.play();
-    let bg = this.add.sprite(0,0,'bgWin');
+    this.bgWinSong.play();
+    var bg = this.add.sprite(0,0,'bgWin');
     bg.setScale(2);
 
     this.add.text(500, 200, 'Vitória', { fontSize: '100px', fontFamily: 'Arial', fill: '#fff' });
@@ -23,8 +22,7 @@ winScene.create = function () {
 
 winScene.update = function () {
     if (this.spacebar.isDown) {
-        bgWinSong.pause()
-        bgSong.play();
+        this.bgWinSong.pause()
         this.time.delayedCall(250, function () {
             this.cameras.main.fade(250);
         }, [], this);

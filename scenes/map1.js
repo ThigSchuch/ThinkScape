@@ -18,9 +18,9 @@ map1Scene.preload = function () {
     this.load.image('bgMap1', 'assets/images/bgMap1.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
-    this.load.image('portal', 'assets/images/portal.png');
+    this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
     this.load.image('life', 'assets/images/heart.png');
-    this.load.spritesheet('fire','assets/images/obstacles/fireanim.png', { frameWidth: 57, frameHeight: 72 });
+    this.load.spritesheet('fire','assets/images/obstacles/fire.png', { frameWidth: 64, frameHeight: 64 });
     this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
     this.load.image('bush','assets/images/obstacles/bush.png');
@@ -50,8 +50,8 @@ map1Scene.create = function () {
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     //Obstacles
-    this.fire1 = this.add.sprite(650, 350, 'fire')
-    this.fire1.setScale(1.6);
+    this.fire1 = this.add.sprite(650, 330, 'fire')
+    this.fire1.setScale(2.2);
 
     //Fire Animation
     this.anims.create({
@@ -113,8 +113,17 @@ map1Scene.create = function () {
     });
 
     //Portal Sprite
-    this.portal = this.add.sprite(1250, 350, 'portal');
-    this.portal.setScale(0.3);
+    this.portal = this.add.sprite(1235, 340, 'portal');
+    this.portal.setScale(3.8);
+
+    //Portal Animation
+    this.anims.create({
+        key: 'portal',
+        frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 16 }),
+        frameRate: 20,
+        repeat: -1
+    });
+    this.portal.anims.play('portal', true);
 
     //Enemy Sprite
     this.enemy = this.add.sprite(850, 335, 'enemy')

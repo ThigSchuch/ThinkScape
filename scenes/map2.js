@@ -7,7 +7,7 @@ map2Scene.init = function () {
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
-    this.positionXEnemy = 8;
+    this.positionXEnemy = 9;
     this.positionYEnemy = 4;
     this.positionXPortal = 13;
     this.positionYPortal = 4;

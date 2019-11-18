@@ -7,7 +7,7 @@ map2Scene.init = function () {
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
-    this.positionXEnemy = 9;
+    this.positionXEnemy = 8;
     this.positionYEnemy = 4;
     this.positionXPortal = 13;
     this.positionYPortal = 4;
@@ -42,7 +42,7 @@ map2Scene.create = function () {
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
     this.lifePic.setScale(0.05)
-    this.livesText = this.add.text(70, 25, lives, { fontSize: '40px', fill: '#000' });
+    this.livesText = this.add.text(70, 25, lives, { fontSize: '40px', fill: '#FFF' });
 
     //Mapping the keyboard
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);

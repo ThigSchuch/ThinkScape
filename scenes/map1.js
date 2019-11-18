@@ -2,28 +2,27 @@ var map1Scene = new Phaser.Scene('map1');
 var lives = localStorage.getItem("lives");
 
 map1Scene.init = function () {
-    this.blocked = ['4,3','7,4','4,5','7,6','8,6','7,2','8,2','10,3','10,5'];
+    this.blocked = ['4,4','5,4','4,7','5,7','7,6','8,6','7,3','8,3','10,2','11,2','10,5','11,5'];
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
-    this.positionXEnemy = 9;
-    this.positionYEnemy = 4;
-    this.positionXPortal = 13;
-    this.positionYPortal = 4;
+    this.positionXEnemy = 8;
+    this.positionYEnemy = 5;
+    this.positionPortal = [4,2];
+    this.positionKey = [9,7];
     this.bgSong = new Audio('assets/sounds/bgSong.mp3');
     this.oldXYPlayer = [2,5];
+    this.playerKey = false;
 };
 
 //Loading images
 map1Scene.preload = function () {
     this.load.image('bgMap1', 'assets/images/bgMap1.png');
+    this.load.image('key', 'assets/images/key.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
     this.load.image('life', 'assets/images/heart.png');
-    this.load.spritesheet('fire','assets/images/obstacles/fire.png', { frameWidth: 64, frameHeight: 64 });
-    this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
-    this.load.image('bush','assets/images/obstacles/bush.png');
     this.load.image('skull','assets/images/skull.png');
 };
 
@@ -37,6 +36,10 @@ map1Scene.create = function () {
     var bg = this.add.sprite(0, 0, 'bgMap1');
     bg.setOrigin(0, 0);
 
+    //Key Sprite
+    this.key = this.add.sprite(850, 650, 'key');
+    this.key.setScale(2);
+
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
     this.lifePic.setScale(0.05)
@@ -49,35 +52,22 @@ map1Scene.create = function () {
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    //Obstacles
-    this.fire1 = this.add.sprite(650, 330, 'fire')
-    this.fire1.setScale(2.2);
-
-    //Fire Animation
-    this.anims.create({
-        key: 'fire',
-        frames: this.anims.generateFrameNumbers('fire', { start: 0, end: 5 }),
-        frameRate: 10,
-        repeat: -1
-    });
-    this.fire1.anims.play('fire', true);
-    
-    //More Obstacles
-    this.barrel1 = this.add.sprite(350, 250, 'barrel')
-    this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(350, 450, 'barrel')
-    this.barrel2.setScale(0.5);
-    this.rock2 = this.add.sprite(700, 125, 'rock')
-    this.rock2.setScale(0.3);
-    this.bush1 = this.add.sprite(950, 250, 'bush')
-    this.bush1.setScale(0.3);
-    this.bush2 = this.add.sprite(950, 450, 'bush')
-    this.bush2.setScale(0.3);
-
     this.isPlayerAlive = true;
 
     this.cameras.main.resetFX();
 
+    //Portal Sprite
+    this.portal = this.add.sprite(350, 150, 'portal');
+    this.portal.setScale(3.8);
+
+    //Portal Animation
+    this.anims.create({
+        key: 'portal',
+        frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 16 }),
+        frameRate: 20,
+        repeat: -1
+    });
+    this.portal.anims.play('portal', true);
 
     //Player Sprite
     this.player = this.add.sprite(150, 335, 'player');
@@ -112,21 +102,8 @@ map1Scene.create = function () {
         repeat: 0
     });
 
-    //Portal Sprite
-    this.portal = this.add.sprite(1235, 340, 'portal');
-    this.portal.setScale(3.8);
-
-    //Portal Animation
-    this.anims.create({
-        key: 'portal',
-        frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 16 }),
-        frameRate: 20,
-        repeat: -1
-    });
-    this.portal.anims.play('portal', true);
-
     //Enemy Sprite
-    this.enemy = this.add.sprite(850, 335, 'enemy')
+    this.enemy = this.add.sprite(750, 425, 'enemy')
     this.enemy.setScale(2);
 
     //Enemy Animations
@@ -157,16 +134,29 @@ map1Scene.create = function () {
         frameRate: 5,
         repeat: 1
     });
+    
+    //Obstacles to player/enemy don't override it
+    //Rock Top
+    this.rockTopLeft = this.add.sprite(390, 325, 'rock')
+    this.rockTopLeft.setScale(0.3);
+    this.rockTopRight = this.add.sprite(1000, 125, 'rock')
+    this.rockTopRight.setScale(0.3);
+    
+    //Rock Middle
+    this.rockMiddleTop = this.add.sprite(700, 225, 'rock')
+    this.rockMiddleTop.setScale(0.3);
+    this.rockMiddleBottom = this.add.sprite(700, 525, 'rock')
+    this.rockMiddleBottom.setScale(0.3);
 
-    //More Obstacles to player/enemy don't override it
-    this.rock1 = this.add.sprite(700, 525, 'rock')
-    this.rock1.setScale(0.3);
+    //Rock Bottom
+    this.rockBottomLeft = this.add.sprite(390, 625, 'rock')
+    this.rockBottomLeft.setScale(0.3);
+    this.rockBottomRight = this.add.sprite(1000, 425, 'rock')
+    this.rockBottomRight.setScale(0.3);
 
     //Text of coordenades player/enemy
     textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
     textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
-    textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
-
 };
 
 //Where the magic happens
@@ -211,8 +201,13 @@ map1Scene.update = function () {
         map1Scene.gameOver();
     }
  
+    if (this.positionXPlayer == this.positionKey[0] && this.positionYPlayer == this.positionKey[1]){
+        this.key.x += 9000;
+        this.playerKey = true;
+    }
+
     //When player reachs the objective
-    if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
+    if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
         this.bgSong.pause();
         this.scene.start('map2');
         //Reset both position

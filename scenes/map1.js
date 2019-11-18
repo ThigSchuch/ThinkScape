@@ -202,7 +202,9 @@ map1Scene.update = function () {
     }
  
     if (this.positionXPlayer == this.positionKey[0] && this.positionYPlayer == this.positionKey[1]){
-        this.key.x += 9000;
+        this.key.x = 150;
+        this.key.y = 40;
+        this.key.setScale(1.25);
         this.playerKey = true;
     }
 

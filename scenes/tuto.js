@@ -1,4 +1,4 @@
-var tutoScene = new Phaser.Scene('tuto1');
+var tutoScene = new Phaser.Scene('tuto');
 
 tutoScene.init = function () {
     this.click = 0;

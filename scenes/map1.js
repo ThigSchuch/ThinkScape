@@ -43,7 +43,7 @@ map1Scene.create = function () {
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
     this.lifePic.setScale(0.05)
-    this.livesText = this.add.text(70, 25, lives, { fontSize: '40px', fill: '#000' });
+    this.livesText = this.add.text(70, 25, lives, { fontSize: '40px', fill: '#FFF' });
 
     //Mapping the keyboard
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);

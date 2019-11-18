@@ -24,7 +24,6 @@ loseScene.create = function () {
 loseScene.update = function () {
     if (this.spacebar.isDown) {
         bgDeathSong.pause()
-        bgSong.play();
         this.time.delayedCall(250, function () {
             this.cameras.main.fade(250);
         }, [], this);

@@ -18,6 +18,7 @@
         },
         //Scenes of the game
         scene: [
+            tutoScene,
             map1Scene,
             map2Scene,
             loseScene,
@@ -28,7 +29,7 @@
     var game = new Phaser.Game(config);
     
     //Start first map
-    game.scene.start('map1');
+    game.scene.start('tuto1');
 
     var lives=5;
     localStorage.setItem("lives",lives);

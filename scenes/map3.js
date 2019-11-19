@@ -1,9 +1,9 @@
-var map2Scene = new Phaser.Scene('map2');
+var map3Scene = new Phaser.Scene('map3');
 var lives = localStorage.getItem("lives");
 
-map2Scene.init = function () {
+map3Scene.init = function () {
     //Set obstacles location
-    this.blocked = ['4,5','10,4','7,6'];
+    this.blocked = ['4,6','10,4','6,5', '1,4', '2,4', '3,4', '4,4', '8,3', '8,4', '8,5', '8,2'];
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 5;
@@ -16,8 +16,8 @@ map2Scene.init = function () {
 };
 
 //Loading images
-map2Scene.preload = function () {
-    this.load.image('bgMap2', 'assets/images/bgMap2.png');
+map3Scene.preload = function () {
+    this.load.image('bgMap3', 'assets/images/bgMap3.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
@@ -29,14 +29,14 @@ map2Scene.preload = function () {
     this.load.image('skull','assets/images/skull.png');
 };
 
-map2Scene.create = function () {
+map3Scene.create = function () {
    
     //Start and repeat background soung
     this.bgSong.play();
     repeatSong(this.bgSong);
 
     //Set background image
-    var bg = this.add.sprite(0, 0, 'bgMap2');
+    var bg = this.add.sprite(0, 0, 'bgMap3');
     bg.setOrigin(0, 0);
 
     //Lives on top of screen
@@ -53,7 +53,7 @@ map2Scene.create = function () {
 
 
     //Player Sprite
-    this.player = this.add.sprite(150, 425, 'player');
+    this.player = this.add.sprite(150, 430, 'player');
     this.player.setScale(2);
 
     //Player Animations
@@ -86,7 +86,7 @@ map2Scene.create = function () {
     });
 
     //Portal Sprite
-    this.portal = this.add.sprite(1235, 340, 'portal');
+    this.portal = this.add.sprite(1235, 250, 'portal');
     this.portal.setScale(3.8);
 
     //Portal Animation
@@ -99,7 +99,7 @@ map2Scene.create = function () {
     this.portal.anims.play('portal', true);
 
     //Enemy Sprite
-    this.enemy = this.add.sprite(850, 425, 'enemy')
+    this.enemy = this.add.sprite(850, 430, 'enemy')
     this.enemy.setScale(2);
 
     //Enemy Animations
@@ -132,9 +132,9 @@ map2Scene.create = function () {
     });
 
     //Obstacles
-    this.fire1 = this.add.sprite(650, 550, 'treasure')
+    this.fire1 = this.add.sprite(550, 450, 'treasure')
     this.fire1.setScale(1.2);
-    this.barrel1 = this.add.sprite(350, 450, 'barrel')
+    this.barrel1 = this.add.sprite(350, 550, 'barrel')
     this.barrel1.setScale(0.5);
     this.barrel2 = this.add.sprite(950, 350, 'barrel')
     this.barrel2.setScale(0.5);
@@ -152,7 +152,7 @@ map2Scene.create = function () {
 
 //Where the magic happens
 
-map2Scene.update = function () {
+map3Scene.update = function () {
     if (!this.isPlayerAlive) {
         return;
     }
@@ -189,14 +189,14 @@ map2Scene.update = function () {
 
     //When enemy reachs the player
     if (this.oldXYPlayer[0] == this.positionXEnemy && this.oldXYPlayer[1] == this.positionYEnemy){
-        map2Scene.gameOver();
+        map3Scene.gameOver();
     }
  
     //When player reachs the objective
     if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
         lives = 5;
         this.bgSong.pause();
-        this.scene.start('map3');
+        this.scene.start('win');
         //Reset both position
         this.resetPosition();
     }
@@ -205,12 +205,12 @@ map2Scene.update = function () {
 };
 
 //Check if the player/enemy is allowed to move to that position
-map2Scene.allowedToMove = function(positionX,positionY){
+map3Scene.allowedToMove = function(positionX,positionY){
     allowed = true;
     //Bounds of map actually
     // 14 is the limit of X
     // 3 and 8 is the limit of Y
-    if (positionX == 0 || positionY == 3 || positionX == 14 || positionY == 8){
+    if (positionX == 0 || positionY == -1 || positionX == 14 || positionY == 8){
         allowed = false;
     }
     else{
@@ -229,18 +229,18 @@ map2Scene.allowedToMove = function(positionX,positionY){
 }
 
 //Euclidean Calc?
-map2Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
+map3Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
     return(Math.sqrt(Math.pow((positionXPlayer - positionXEnemy),2) + Math.pow((positionYPlayer - positionYEnemy),2)));
 }
 
 //Coordenates
-map2Scene.updateText = function(){
+map3Scene.updateText = function(){
     textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
     textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter
-map2Scene.resetPosition = function(){
+map3Scene.resetPosition = function(){
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
     this.positionXEnemy = 9;
@@ -249,7 +249,7 @@ map2Scene.resetPosition = function(){
 
 
 //Get the minor and second minor value
-map2Scene.minor = function(array){
+map3Scene.minor = function(array){
     minor = Infinity;
     second = Infinity;
 
@@ -266,7 +266,7 @@ map2Scene.minor = function(array){
 }
 
 //Enemy walk
-map2Scene.enemyWalk = function(){
+map3Scene.enemyWalk = function(){
 
     left = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy-1,this.positionYEnemy)
     right = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy+1,this.positionYEnemy)
@@ -320,7 +320,7 @@ map2Scene.enemyWalk = function(){
 };
 
 //When the enemy hit the player it's game over
-map2Scene.gameOver = function () {
+map3Scene.gameOver = function () {
     //Pause and restart background song
     restartSong(this.bgSong);
 
@@ -339,7 +339,7 @@ map2Scene.gameOver = function () {
     }, [], this);
 
     this.time.delayedCall(800, function () {
-        this.scene.start('map2');
+        this.scene.start('map3');
         lives -= 1;
         
         //Reset both position

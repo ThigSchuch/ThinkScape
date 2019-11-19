@@ -26,6 +26,7 @@
             tutoScene,
             map1Scene,
             map2Scene,
+            map3Scene,
             loseScene,
             winScene
         ]

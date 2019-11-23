@@ -15,6 +15,7 @@ nicknameScene.create = function (){
         if (event.target.name === 'playButton'){
             var valorentrada = this.getChildByName('valor');
             nick = valorentrada.value;
+            localStorage.setItem("nomeDeUsuario", nick); 
             if (valorentrada.value !== ''){
                 console.log(valorentrada.value)
         //  Desativar os eventos de clique
@@ -34,6 +35,5 @@ nicknameScene.create = function (){
         });
 
 
-    
 };
 

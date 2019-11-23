@@ -1,4 +1,5 @@
 var tutoScene = new Phaser.Scene('tuto');
+var nickname = localStorage.getItem("nomeDeUsuario");
 
 tutoScene.init = function () {
     this.click = 0;
@@ -42,7 +43,6 @@ tutoScene.create = function () {
         frames: [{ key: 'portal', frame: 1 }],
         frameRate: 20
     });
-
     text = this.add.text(300, 200, 'Este é seu personagem.', { fontSize: '50px', fill: '#fff' });
     this.add.text(250, 650, 'Pressione espaço para continuar.', { fontSize: '40px', fill: '#fff' });
 };

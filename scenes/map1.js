@@ -1,5 +1,6 @@
 var map1Scene = new Phaser.Scene('map1');
 var lives = localStorage.getItem("lives");
+var nickname = localStorage.getItem("nomeDeUsuario");
 
 map1Scene.init = function () {
     this.blocked = ['4,4','5,4','4,7','5,7','7,6','8,6','7,3','8,3','10,2','11,2','10,5','11,5'];
@@ -155,6 +156,7 @@ map1Scene.create = function () {
     this.rockBottomRight.setScale(0.3);
 
     //Text of coordenades player/enemy
+    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
     textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
     textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
 };

@@ -1,4 +1,5 @@
 var winScene = new Phaser.Scene('win');
+var nickname = localStorage.getItem("nomeDeUsuario");
 
 winScene.init = function () {
     //BgWin Song

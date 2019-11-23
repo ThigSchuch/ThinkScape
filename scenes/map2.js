@@ -1,5 +1,6 @@
 var map2Scene = new Phaser.Scene('map2');
 var lives = localStorage.getItem("lives");
+var nickname = localStorage.getItem("nomeDeUsuario");
 
 map2Scene.init = function () {
     //Set obstacles location
@@ -235,6 +236,7 @@ map2Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnem
 
 //Coordenates
 map2Scene.updateText = function(){
+    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
     textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
     textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }

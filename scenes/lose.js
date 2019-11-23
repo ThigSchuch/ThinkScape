@@ -1,5 +1,5 @@
 var loseScene = new Phaser.Scene('lose');
-
+var nickname = localStorage.getItem("nomeDeUsuario");
 //BgDeath Song
 var bgDeathSong = new Audio('assets/sounds/bgDeathSong.mp3');
 

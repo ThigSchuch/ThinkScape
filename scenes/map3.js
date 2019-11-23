@@ -1,9 +1,10 @@
 var map3Scene = new Phaser.Scene('map3');
 var lives = localStorage.getItem("lives");
+var nickname = localStorage.getItem("nomeDeUsuario");
 
 map3Scene.init = function () {
     //Set obstacles location
-    this.blocked = ['4,6','10,4','6,5', '1,4', '2,4', '3,4', '4,4', '8,3', '8,4', '8,5', '8,2'];
+    this.blocked = ['10,4','9,4','4,6', '10,6','6,5', '1,4', '2,4', '3,4', '4,4', '8,3', '8,4', '8,2'];
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 5;
@@ -136,7 +137,7 @@ map3Scene.create = function () {
     this.fire1.setScale(1.2);
     this.barrel1 = this.add.sprite(350, 550, 'barrel')
     this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(950, 350, 'barrel')
+    this.barrel2 = this.add.sprite(940, 560, 'barrel')
     this.barrel2.setScale(0.5);
 
     this.isPlayerAlive = true;
@@ -144,6 +145,7 @@ map3Scene.create = function () {
     this.cameras.main.resetFX();
 
     //Text of coordenades player/enemy
+    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
     textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
     textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
     textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });

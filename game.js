@@ -39,5 +39,7 @@
 
     var lives=5;
     localStorage.setItem("lives",lives);
+    var name = '';
+    localStorage.setItem("nomeDeUsuario", name);   
 })();
 

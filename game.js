@@ -27,6 +27,8 @@
             map1Scene,
             map2Scene,
             map3Scene,
+            map4Scene,
+            map5Scene,
             loseScene,
             winScene
         ]

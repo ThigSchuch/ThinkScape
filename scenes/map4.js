@@ -1,43 +1,43 @@
-var map3Scene = new Phaser.Scene('map3');
+var map4Scene = new Phaser.Scene('map4');
 var lives = localStorage.getItem("lives");
 var nickname = localStorage.getItem("nomeDeUsuario");
 
-map3Scene.init = function () {
+map4Scene.init = function () {
     //Set obstacles location
-    this.blocked = ['10,4','9,4','4,6', '10,6','6,5', '1,4', '2,4', '3,4', '4,4', '8,3', '8,4', '8,2'];
+    this.blocked = ['4,6', '9,6', '8,3', '8,2', '1,3', '2,3', '3,3', '4,3', '5,3', '6,3','7,3', '12,6', '9,3', '10,3', '11,3', '12,3', '13,3'];
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 5;
     this.positionXEnemy = 9;
     this.positionYEnemy = 5;
-    this.positionXPortal = 13;
-    this.positionYPortal = 3;
+    this.positionXPortal = 6;
+    this.positionYPortal = 4;
     this.bgSong = new Audio('assets/sounds/bgSong.mp3');
     this.oldXYPlayer = [2,5];
 };
 
 //Loading images
-map3Scene.preload = function () {
-    this.load.image('bgMap3', 'assets/images/bgMap3.png');
+map4Scene.preload = function () {
+    this.load.image('bgMa4', 'assets/images/bgMap4.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
     this.load.image('life', 'assets/images/heart.png');
-    this.load.image('treasure','assets/images/obstacles/treasure.png');
+    this.load.image('spikes','assets/images/obstacles/spikes.png');
     this.load.image('barrel','assets/images/obstacles/barrel.png');
     this.load.image('rock','assets/images/obstacles/rock.png');
     this.load.image('bush','assets/images/obstacles/bush.png');
     this.load.image('skull','assets/images/skull.png');
 };
 
-map3Scene.create = function () {
+map4Scene.create = function () {
    
     //Start and repeat background soung
     this.bgSong.play();
     repeatSong(this.bgSong);
 
     //Set background image
-    var bg = this.add.sprite(0, 0, 'bgMap3');
+    var bg = this.add.sprite(0, 0, 'bgMa4');
     bg.setOrigin(0, 0);
 
     //Lives on top of screen
@@ -87,7 +87,7 @@ map3Scene.create = function () {
     });
 
     //Portal Sprite
-    this.portal = this.add.sprite(1235, 225, 'portal');
+    this.portal = this.add.sprite(550, 330, 'portal');
     this.portal.setScale(3.8);
 
     //Portal Animation
@@ -133,11 +133,11 @@ map3Scene.create = function () {
     });
 
     //Obstacles
-    this.fire1 = this.add.sprite(550, 450, 'treasure')
-    this.fire1.setScale(1.2);
-    this.barrel1 = this.add.sprite(350, 550, 'barrel')
-    this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(940, 560, 'barrel')
+    this.spikes = this.add.sprite(850, 550, 'spikes')
+    this.spikes.setScale(0.5);
+    this.rock = this.add.sprite(350, 545, 'rock')
+    this.rock.setScale(0.2);
+    this.barrel2 = this.add.sprite(1150, 545, 'barrel')
     this.barrel2.setScale(0.5);
 
     this.isPlayerAlive = true;
@@ -154,7 +154,7 @@ map3Scene.create = function () {
 
 //Where the magic happens
 
-map3Scene.update = function () {
+map4Scene.update = function () {
     if (!this.isPlayerAlive) {
         return;
     }
@@ -191,14 +191,14 @@ map3Scene.update = function () {
 
     //When enemy reachs the player
     if (this.oldXYPlayer[0] == this.positionXEnemy && this.oldXYPlayer[1] == this.positionYEnemy){
-        map3Scene.gameOver();
+        map4Scene.gameOver();
     }
  
     //When player reachs the objective
     if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
         lives = 5;
         this.bgSong.pause();
-        this.scene.start('map4');
+        this.scene.start('map5');
         //Reset both position
         this.resetPosition();
     }
@@ -207,7 +207,7 @@ map3Scene.update = function () {
 };
 
 //Check if the player/enemy is allowed to move to that position
-map3Scene.allowedToMove = function(positionX,positionY){
+map4Scene.allowedToMove = function(positionX,positionY){
     allowed = true;
     //Bounds of map actually
     // 14 is the limit of X
@@ -231,18 +231,18 @@ map3Scene.allowedToMove = function(positionX,positionY){
 }
 
 //Euclidean Calc?
-map3Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
+map4Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnemy,positionYEnemy){
     return(Math.sqrt(Math.pow((positionXPlayer - positionXEnemy),2) + Math.pow((positionYPlayer - positionYEnemy),2)));
 }
 
 //Coordenates
-map3Scene.updateText = function(){
+map4Scene.updateText = function(){
     textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
     textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter
-map3Scene.resetPosition = function(){
+map4Scene.resetPosition = function(){
     this.positionXPlayer = 2;
     this.positionYPlayer = 4;
     this.positionXEnemy = 9;
@@ -251,7 +251,7 @@ map3Scene.resetPosition = function(){
 
 
 //Get the minor and second minor value
-map3Scene.minor = function(array){
+map4Scene.minor = function(array){
     minor = Infinity;
     second = Infinity;
 
@@ -268,7 +268,7 @@ map3Scene.minor = function(array){
 }
 
 //Enemy walk
-map3Scene.enemyWalk = function(){
+map4Scene.enemyWalk = function(){
 
     left = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy-1,this.positionYEnemy)
     right = this.euclideanCalc(this.positionXPlayer,this.positionYPlayer,this.positionXEnemy+1,this.positionYEnemy)
@@ -322,7 +322,7 @@ map3Scene.enemyWalk = function(){
 };
 
 //When the enemy hit the player it's game over
-map3Scene.gameOver = function () {
+map4Scene.gameOver = function () {
     //Pause and restart background song
     restartSong(this.bgSong);
 
@@ -341,7 +341,7 @@ map3Scene.gameOver = function () {
     }, [], this);
 
     this.time.delayedCall(800, function () {
-        this.scene.start('map3');
+        this.scene.start('map4');
         lives -= 1;
         
         //Reset both position

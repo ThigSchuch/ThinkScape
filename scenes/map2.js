@@ -87,7 +87,7 @@ map2Scene.create = function () {
     });
 
     //Portal Sprite
-    this.portal = this.add.sprite(1235, 340, 'portal');
+    this.portal = this.add.sprite(1235, 320, 'portal');
     this.portal.setScale(3.8);
 
     //Portal Animation

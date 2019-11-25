@@ -10,8 +10,9 @@ map4Scene.init = function () {
     this.positionYPlayer = 5;
     this.positionXEnemy = 9;
     this.positionYEnemy = 5;
-    this.positionXPortal = 6;
-    this.positionYPortal = 4;
+    //mod agora
+    this.positionPortal = [6,4];
+    this.positionKey = [12,5];
     this.bgSong = new Audio('assets/sounds/bgSong.mp3');
     this.oldXYPlayer = [2,5];
 };
@@ -19,6 +20,8 @@ map4Scene.init = function () {
 //Loading images
 map4Scene.preload = function () {
     this.load.image('bgMa4', 'assets/images/bgMap4.png');
+    //mod agora
+    this.load.image('key', 'assets/images/key.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
@@ -39,6 +42,11 @@ map4Scene.create = function () {
     //Set background image
     var bg = this.add.sprite(0, 0, 'bgMa4');
     bg.setOrigin(0, 0);
+
+    //mod agora
+    //Key Sprite
+    this.key = this.add.sprite(1150, 450, 'key');
+    this.key.setScale(2);
 
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
@@ -145,10 +153,9 @@ map4Scene.create = function () {
     this.cameras.main.resetFX();
 
     //Text of coordenades player/enemy
-    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
-    textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
-    textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
-    textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
+    //textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
+    //textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
+    //textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
 
 };
 
@@ -194,14 +201,21 @@ map4Scene.update = function () {
         map4Scene.gameOver();
     }
  
-    //When player reachs the objective
-    if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
+    //mod agora
+    if (this.positionXPlayer == this.positionKey[0] && this.positionYPlayer == this.positionKey[1]){
+        this.key.x = 150;
+        this.key.y = 40;
+        this.key.setScale(1.25);
+        this.playerKey = true;
+    }
+    //mod agora
+    if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
         lives = 5;
         this.bgSong.pause();
         this.scene.start('map5');
         //Reset both position
         this.resetPosition();
-    }
+    } 
     
     this.updateText();
 };
@@ -237,8 +251,9 @@ map4Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnem
 
 //Coordenates
 map4Scene.updateText = function(){
-    textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
-    textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
+    textVida= this.add.text(200, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
+    //textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
+    //textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter

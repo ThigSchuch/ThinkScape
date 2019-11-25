@@ -4,14 +4,14 @@ var nickname = localStorage.getItem("nomeDeUsuario");
 
 map2Scene.init = function () {
     //Set obstacles location
-    this.blocked = ['4,5','10,4','7,6'];
+    this.blocked = ['4,5','10,6','7,6'];
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 5;
     this.positionXEnemy = 9;
     this.positionYEnemy = 5;
-    this.positionXPortal = 13;
-    this.positionYPortal = 4;
+    this.positionPortal = [13,4];
+    this.positionKey = [10,7];
     this.bgSong = new Audio('assets/sounds/bgSong.mp3');
     this.oldXYPlayer = [2,5];
 };
@@ -19,6 +19,7 @@ map2Scene.init = function () {
 //Loading images
 map2Scene.preload = function () {
     this.load.image('bgMap2', 'assets/images/bgMap2.png');
+    this.load.image('key', 'assets/images/key.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
@@ -39,6 +40,11 @@ map2Scene.create = function () {
     //Set background image
     var bg = this.add.sprite(0, 0, 'bgMap2');
     bg.setOrigin(0, 0);
+
+    //Key Sprite
+    this.key = this.add.sprite(950, 650, 'key');
+    this.key.setScale(2);
+    
 
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
@@ -137,7 +143,7 @@ map2Scene.create = function () {
     this.fire1.setScale(1.2);
     this.barrel1 = this.add.sprite(350, 450, 'barrel')
     this.barrel1.setScale(0.5);
-    this.barrel2 = this.add.sprite(950, 350, 'barrel')
+    this.barrel2 = this.add.sprite(950, 550, 'barrel')
     this.barrel2.setScale(0.5);
 
     this.isPlayerAlive = true;
@@ -145,9 +151,9 @@ map2Scene.create = function () {
     this.cameras.main.resetFX();
 
     //Text of coordenades player/enemy
-    textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
-    textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
-    textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
+    //textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
+    //textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
+    //textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
 
 };
 
@@ -193,8 +199,14 @@ map2Scene.update = function () {
         map2Scene.gameOver();
     }
  
+    if (this.positionXPlayer == this.positionKey[0] && this.positionYPlayer == this.positionKey[1]){
+        this.key.x = 150;
+        this.key.y = 40;
+        this.key.setScale(1.25);
+        this.playerKey = true;
+    }
     //When player reachs the objective
-    if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
+    if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
         lives = 5;
         this.bgSong.pause();
         this.scene.start('map3');
@@ -236,9 +248,9 @@ map2Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnem
 
 //Coordenates
 map2Scene.updateText = function(){
-    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
-    textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
-    textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
+    textVida= this.add.text(200, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
+    //textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
+    //textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter

@@ -4,7 +4,7 @@ var nickname = localStorage.getItem("nomeDeUsuario");
 
 map5Scene.init = function () {
     //Set obstacles location
-    this.blocked = ['4,6', '9,6', '8,3', '8,2', '1,3', '2,3', '3,3', '4,3', '5,3', '6,3','7,3', '12,6', '9,3', '10,3', '11,3', '12,3', '13,3'];
+    this.blocked = ['4,5', '6,6', '8,3', '8,2', '1,3', '2,3', '3,3', '4,3', '5,3', '6,3','7,3', '8,5', '8,7', '10,6', '9,3', '10,3', '11,3', '12,3', '13,3'];
 
     this.positionXPlayer = 2;
     this.positionYPlayer = 5;
@@ -12,6 +12,9 @@ map5Scene.init = function () {
     this.positionYEnemy = 5;
     this.positionXPortal = 13;
     this.positionYPortal = 4;
+    //mod agora
+    this.positionPortal = [13,4];
+    this.positionKey = [8,6];
     this.bgSong = new Audio('assets/sounds/bgSong.mp3');
     this.oldXYPlayer = [2,5];
 };
@@ -19,6 +22,8 @@ map5Scene.init = function () {
 //Loading images
 map5Scene.preload = function () {
     this.load.image('bgMap5', 'assets/images/bgMap5.png');
+    //mod agora
+    this.load.image('key', 'assets/images/key.png');
     this.load.spritesheet('player', 'assets/images/warrior.png',{ frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('enemy', 'assets/images/enemy.png', { frameWidth: 32, frameHeight: 64});
     this.load.spritesheet('portal', 'assets/images/portal.png',  { frameWidth: 32, frameHeight: 32 });
@@ -39,6 +44,11 @@ map5Scene.create = function () {
     //Set background image
     var bg = this.add.sprite(0, 0, 'bgMap5');
     bg.setOrigin(0, 0);
+
+    //mod agora
+    //Key Sprite
+    this.key = this.add.sprite(750, 545, 'key');
+    this.key.setScale(2);
 
     //Lives on top of screen
     this.lifePic = this.add.sprite(40, 40, 'life')
@@ -133,11 +143,15 @@ map5Scene.create = function () {
     });
 
     //Obstacles
-    this.spikes = this.add.sprite(850, 550, 'spikes')
+    this.spikes = this.add.sprite(550, 550, 'spikes')
     this.spikes.setScale(0.5);
-    this.rock = this.add.sprite(350, 545, 'rock')
+    this.rock = this.add.sprite(350, 445, 'rock')
     this.rock.setScale(0.2);
-    this.barrel2 = this.add.sprite(1150, 545, 'barrel')
+    this.barrel2 = this.add.sprite(750, 445, 'barrel')
+    this.barrel2.setScale(0.5);
+    this.barrel2 = this.add.sprite(750, 645, 'barrel')
+    this.barrel2.setScale(0.5);
+    this.barrel2 = this.add.sprite(950, 545, 'barrel')
     this.barrel2.setScale(0.5);
 
     this.isPlayerAlive = true;
@@ -145,10 +159,9 @@ map5Scene.create = function () {
     this.cameras.main.resetFX();
 
     //Text of coordenades player/enemy
-    textVida= this.add.text(100, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
-    textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
-    textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
-    textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
+    //textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
+    //textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
+    //textB = this.add.text(600, 50, '', { fontSize: '50px', fill: '#fff' });
 
 };
 
@@ -193,15 +206,22 @@ map5Scene.update = function () {
     if (this.oldXYPlayer[0] == this.positionXEnemy && this.oldXYPlayer[1] == this.positionYEnemy){
         map5Scene.gameOver();
     }
- 
-    //When player reachs the objective
-    if (this.positionXPlayer == this.positionXPortal && this.positionYPlayer == this.positionYPortal) {
+    
+    //mod agora
+    if (this.positionXPlayer == this.positionKey[0] && this.positionYPlayer == this.positionKey[1]){
+        this.key.x = 150;
+        this.key.y = 40;
+        this.key.setScale(1.25);
+        this.playerKey = true;
+    }
+    //mod agora
+    if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
         lives = 5;
         this.bgSong.pause();
         this.scene.start('win');
         //Reset both position
         this.resetPosition();
-    }
+    } 
     
     this.updateText();
 };
@@ -237,8 +257,9 @@ map5Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnem
 
 //Coordenates
 map5Scene.updateText = function(){
-    textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
-    textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
+    textVida= this.add.text(200, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
+    //textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
+    //textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter

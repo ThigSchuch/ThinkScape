@@ -156,9 +156,8 @@ map1Scene.create = function () {
     this.rockBottomRight.setScale(0.3);
 
     //Text of coordenades player/enemy
-    textVida= this.add.text(200, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
-    textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
-    textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
+    //textP = this.add.text(100, 50, '('+this.positionXPlayer+','+this.positionYPlayer+')', { fontSize: '50px', fill: '#fff' });
+    //textE = this.add.text(300, 50, '('+this.positionXEnemy+','+this.positionYEnemy+')', { fontSize: '50px', fill: '#fff' });
 };
 
 //Where the magic happens
@@ -250,10 +249,10 @@ map1Scene.euclideanCalc = function(positionXPlayer,positionYPlayer,positionXEnem
     return(Math.sqrt(Math.pow((positionXPlayer - positionXEnemy),2) + Math.pow((positionYPlayer - positionYEnemy),2)));
 }
 
-//Coordenates
 map1Scene.updateText = function(){
-    textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
-    textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
+    textVida= this.add.text(200, 15, 'Nick:' + localStorage.getItem("nomeDeUsuario"), { fontSize: '35px', fill: '#fff' });
+    //textP.setText('P('+this.positionXPlayer+','+this.positionYPlayer+')');
+    //textE.setText('E('+this.positionXEnemy+','+this.positionYEnemy+')');
 }
 
 //When player dies, reset position counter

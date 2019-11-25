@@ -207,7 +207,6 @@ map2Scene.update = function () {
     }
     //When player reachs the objective
     if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
-        lives = 5;
         this.bgSong.pause();
         this.scene.start('map3');
         //Reset both position

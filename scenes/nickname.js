@@ -3,11 +3,16 @@ var nicknameScene = new Phaser.Scene('nickname');
 nicknameScene.init = function () {};
 
 nicknameScene.preload = function () {
+    this.load.image('nickBG', 'assets/images/nickBG.png');
     this.load.html('nameform', 'assets/html/nameform.html')
     
 };
 
 nicknameScene.create = function (){
+    //Set background image
+    var bg = this.add.sprite(0, 0, 'nickBG');
+    bg.setOrigin(0, 0);
+
     var element = this.add.dom(650, 0).createFromCache('nameform');
     element.addListener('click');
     element.game = this;

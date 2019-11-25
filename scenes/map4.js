@@ -210,7 +210,6 @@ map4Scene.update = function () {
     }
     //mod agora
     if (this.positionXPlayer == this.positionPortal[0] && this.positionYPlayer == this.positionPortal[1] && this.playerKey == true) {
-        lives = 5;
         this.bgSong.pause();
         this.scene.start('map5');
         //Reset both position
